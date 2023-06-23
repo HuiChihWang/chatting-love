@@ -1,10 +1,14 @@
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import * as bcrypt from 'bcrypt';
 
 @Entity({
   name: 'users',
@@ -13,30 +17,24 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({
-    length: 50,
-  })
+  @Column()
   firstName: string;
 
-  @Column({
-    length: 50,
-  })
+  @Column()
   lastName: string;
 
   @Column({
-    length: 50,
     unique: true,
   })
   username: string;
 
   @Column({
-    length: 50,
     unique: true,
   })
   email: string;
 
   @Column({
-    length: 50,
+    nullable: true,
   })
   password: string;
 
@@ -45,4 +43,12 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  async encodePassword() {
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, 10);
+    }
+  }
 }

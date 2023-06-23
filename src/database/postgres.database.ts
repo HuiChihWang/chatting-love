@@ -1,7 +1,7 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 
-export default TypeOrmModule.forRoot({
+const PostgresModule = TypeOrmModule.forRoot({
   type: 'postgres',
   host: 'localhost',
   port: 5432,
@@ -11,3 +11,5 @@ export default TypeOrmModule.forRoot({
   entities: [User],
   synchronize: true,
 });
+
+export default PostgresModule;

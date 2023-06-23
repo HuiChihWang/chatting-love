@@ -15,10 +15,11 @@ services:
   mongo:
     container_name: message_mongo
     image: mongo
-    ports:
-      - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: admin
-      MONGO_INITDB_DATABASE: messages
+    ports:
+      - 27017:27017
+    volumes:
+      - .storage/mongo:/data/db
     restart: unless-stopped

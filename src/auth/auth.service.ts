@@ -6,11 +6,15 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './jwt.strategy';
 
+import { CacheService } from '../cache/cache.service';
+import { UserCacheObject } from '../cache/cache.interface';
+
 @Injectable()
 export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly cacheService: CacheService,
   ) {}
 
   async signInLocal(request: SignInRequest) {
@@ -33,12 +37,15 @@ export class AuthService {
       username: user.username,
     };
 
+    // example: cache user state
+    const userCache = await this.cacheService.get<UserCacheObject>(user.id);
+    userCache.lastLoginTime = new Date();
+    await this.cacheService.put(user.id, userCache);
+
     return await this.jwtService.signAsync(payload);
   }
 
   async validateJwtPayload(payload: JwtPayload) {
-    console.log(payload);
-
     const username = payload?.username;
 
     if (!username) {

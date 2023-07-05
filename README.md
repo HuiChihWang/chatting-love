@@ -23,8 +23,34 @@
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
 ## Description
+A good practice to do authentication and authorization in Nest App.
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+#### 1. Authentication
+- [x] JWT Authentication
+- [ ] JWT Renewal
+- [ ] JWT Refresh
+- [ ] JWT Revoke
+- [ ] RBAC
+
+#### 2. Chat Room and Message
+
+
+
+
+## Tech Stacks
+- NestJS
+- Passport
+- TypeORM (Postgres)
+- Mongoose (Mongo)
+
+
+## System Diagram
+
+
+
+
+
+
 
 ## Installation
 

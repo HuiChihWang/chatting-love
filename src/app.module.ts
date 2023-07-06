@@ -8,6 +8,7 @@ import { CacheModule } from './cache/cache.module';
 import PostgresModule from './database/postgres.database';
 import MongoModule from './database/mongo.database';
 import { ConfigModule } from '@nestjs/config';
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
   imports: [
@@ -19,7 +20,9 @@ import { ConfigModule } from '@nestjs/config';
     CacheModule,
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: '.env.development',
     }),
+    GatewayModule,
   ],
   controllers: [AppController],
   providers: [AppService],

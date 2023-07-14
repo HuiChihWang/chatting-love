@@ -25,11 +25,10 @@ export class MessageController {
   }
 
   @Get('/private')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt-access'))
   async testPrivate(@Req() request: Request) {
     const user = request.user as User;
 
-    // Test example redis
     const userState = await this.cacheService.get<UserCacheObject>(user?.id);
 
     return `Hello ${user.username}, you last login time is ${userState?.lastLoginTime}`;

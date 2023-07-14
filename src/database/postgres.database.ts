@@ -19,7 +19,7 @@ const getPostgresOptions = (
     password,
     database,
     entities: [User],
-    synchronize: true,
+    // synchronize: true,
   };
 };
 const PostgresModule = TypeOrmModule.forRootAsync({

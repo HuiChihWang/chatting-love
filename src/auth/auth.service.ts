@@ -38,31 +38,40 @@ export class AuthService {
     userCache.lastLoginTime = new Date();
     await this.cacheService.put(user.id, userCache);
 
-    return this.generateTokens(user);
+    const accessToken = this.generateAccessToken(user);
+    const refreshToken = this.generateRefreshToken(user);
+
+    return { accessToken, refreshToken };
   }
 
-  async generateTokens(user: User) {
+  //TODO: cache refresh token in db so we can track token and revoke it
+  async refreshJwtToken(user: User) {
+    console.log(`[Auth Service] Refresh token for user ${user.username}`);
+    return this.generateAccessToken(user);
+  }
+
+  private async generateAccessToken(user: User) {
     const payload: JwtPayload = {
       sub: user.id,
       username: user.username,
     };
 
-    const accessToken = await this.jwtService.signAsync(payload, {
+    return await this.jwtService.signAsync(payload, {
       secret: 'ACCESS_JWT_SECRET',
       expiresIn: '15m',
     });
-
-    const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: 'REFRESH_JWT_SECRET',
-      expiresIn: '2d',
-    });
-
-    return { accessToken, refreshToken };
   }
 
-  async refreshJwtToken(user: User) {
-    console.log(`[Auth Service] Refresh token for user ${user.username}`);
-    return this.generateTokens(user);
+  private async generateRefreshToken(user: User) {
+    const payload: JwtPayload = {
+      sub: user.id,
+      username: user.username,
+    };
+
+    return await this.jwtService.signAsync(payload, {
+      secret: 'REFRESH_JWT_SECRET',
+      expiresIn: '1d',
+    });
   }
 
   // revoke: https://devops.com/how-to-revoke-json-web-tokens-jwts/
@@ -98,6 +107,11 @@ export class AuthService {
         ignoreExpiration: true,
       },
     );
+
+    //TODO: check token date
+    if (expiredTokenPayload.exp > Date.now() / 1000) {
+      throw new UnauthorizedException('Token does not expire yet.');
+    }
 
     if (
       refreshTokenPayload.sub !== expiredTokenPayload.sub ||

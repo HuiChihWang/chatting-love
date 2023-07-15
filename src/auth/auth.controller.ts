@@ -26,12 +26,10 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt-refresh'))
   async refreshToken(@Req() request: Request) {
     const user = request.user as User;
-    const { accessToken, refreshToken } =
-      await this.authService.refreshJwtToken(user);
+    const accessToken = await this.authService.refreshJwtToken(user);
 
     return {
       accessToken,
-      refreshToken,
       message: 'refresh token successfully.',
     };
   }

@@ -8,6 +8,7 @@ import { RefreshTokenRequest } from './auth.request';
 export interface JwtPayload {
   sub: string;
   username: string;
+  exp?: number;
 }
 
 @Injectable()
@@ -37,7 +38,6 @@ export class JwtRefreshStrategy extends PassportStrategy(
     });
   }
 
-  // TODO: check whether token is really expired, otherwise, tokens can be issued infinitely
   async validate(request: Request, payload: JwtPayload) {
     const { expiredToken } = request.body satisfies RefreshTokenRequest;
     return await this.authService.validateRefreshToken(payload, expiredToken);

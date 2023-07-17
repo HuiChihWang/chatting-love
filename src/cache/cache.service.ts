@@ -14,4 +14,8 @@ export class CacheService {
   async put<T>(key: string, value: T) {
     await this.cacheManager.set(key, value);
   }
+
+  async delete(key: string) {
+    await this.cacheManager.del(key);
+  }
 }

@@ -33,4 +33,14 @@ export class AuthController {
       message: 'refresh token successfully.',
     };
   }
+
+  @UseGuards(AuthGuard('jwt-access'))
+  async logout(@Req() request: Request) {
+    const user = request.user as User;
+    await this.authService.logout(user);
+
+    return {
+      message: 'log out successfully',
+    };
+  }
 }

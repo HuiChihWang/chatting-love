@@ -44,6 +44,12 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
+  async logout(user: User) {
+    await this.cacheService.delete(user.id);
+
+    // revoke token here
+  }
+
   //TODO: cache refresh token in db so we can track token and revoke it
   async refreshJwtToken(user: User) {
     console.log(`[Auth Service] Refresh token for user ${user.username}`);
@@ -74,7 +80,6 @@ export class AuthService {
     });
   }
 
-  // revoke: https://devops.com/how-to-revoke-json-web-tokens-jwts/
   async validateAccessToken(payload: JwtPayload) {
     return await this.extractUserFromTokenPayload(payload);
   }
@@ -108,7 +113,6 @@ export class AuthService {
       },
     );
 
-    //TODO: check token date
     if (expiredTokenPayload.exp > Date.now() / 1000) {
       throw new UnauthorizedException('Token does not expire yet.');
     }

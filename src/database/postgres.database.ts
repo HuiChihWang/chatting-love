@@ -1,6 +1,7 @@
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 import { ConfigService } from '@nestjs/config';
+import { JwtToken } from '../auth/token.entity';
 
 const getPostgresOptions = (
   configService: ConfigService,
@@ -18,8 +19,8 @@ const getPostgresOptions = (
     username,
     password,
     database,
-    entities: [User],
-    // synchronize: true,
+    entities: [User, JwtToken],
+    synchronize: true,
   };
 };
 const PostgresModule = TypeOrmModule.forRootAsync({

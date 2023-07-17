@@ -27,9 +27,8 @@ A good practice to do authentication and authorization in Nest App.
 
 #### 1. Authentication
 - [x] JWT Authentication
-- [ ] JWT Renewal
-- [ ] JWT Refresh
-- [ ] JWT Revoke
+- [x] JWT Refresh
+- [x] JWT Revoke
 - [ ] RBAC
 
 #### 2. Chat Room and Message

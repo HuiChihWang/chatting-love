@@ -1,52 +1,39 @@
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
-  getRepository,
-  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
-import * as bcrypt from 'bcrypt';
-import { JwtToken } from '../auth/token.entity';
+import { User } from '../user/user.entity';
 
 @Entity({
-  name: 'users',
+  name: 'jwt_tokens',
 })
-export class User {
+export class JwtToken {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  firstName: string;
-
-  @Column()
-  lastName: string;
-
   @Column({
+    nullable: false,
     unique: true,
   })
-  username: string;
+  refreshToken: string;
 
   @Column({
+    nullable: false,
     unique: true,
   })
-  email: string;
+  accessToken: string;
 
   @Column({
-    nullable: true,
+    nullable: false,
   })
-  password: string;
+  expiredAt: Date;
 
-  @OneToOne(() => JwtToken, {
-    cascade: ['insert', 'update', 'remove'],
-  })
-  @JoinColumn()
-  token: JwtToken;
+  @OneToOne(() => User, (user) => user.token)
+  user: User;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -54,6 +41,7 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  // TODO: hash token
   // @BeforeInsert()
   // @BeforeUpdate()
   // async encodePassword() {

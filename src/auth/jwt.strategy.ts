@@ -17,11 +17,16 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-access') {
     super({
       secretOrKey: 'ACCESS_JWT_SECRET',
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      passReqToCallback: true,
     });
   }
 
-  async validate(payload: JwtPayload) {
-    return await this.authService.validateAccessToken(payload);
+  async validate(request: Request, payload: JwtPayload) {
+    const accessTokenInHeader = request.headers.authorization.split(' ')[1];
+    return await this.authService.validateAccessToken(
+      payload,
+      accessTokenInHeader,
+    );
   }
 }
 
@@ -39,7 +44,10 @@ export class JwtRefreshStrategy extends PassportStrategy(
   }
 
   async validate(request: Request, payload: JwtPayload) {
-    const { expiredToken } = request.body satisfies RefreshTokenRequest;
-    return await this.authService.validateRefreshToken(payload, expiredToken);
+    const refreshTokenString = request.headers.authorization.split(' ')[1];
+    return await this.authService.validateRefreshToken(
+      payload,
+      refreshTokenString,
+    );
   }
 }

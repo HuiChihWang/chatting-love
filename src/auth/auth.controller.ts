@@ -34,6 +34,7 @@ export class AuthController {
     };
   }
 
+  @Post('/logout')
   @UseGuards(AuthGuard('jwt-access'))
   async logout(@Req() request: Request) {
     const user = request.user as User;

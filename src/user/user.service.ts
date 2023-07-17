@@ -1,7 +1,8 @@
-import { Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserRequest } from './user.request';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 export class UserService {
   constructor(
@@ -18,8 +19,20 @@ export class UserService {
   async findUser(username: string) {
     return await this.userRepository.findOne({
       where: {
-        username: username,
+        username,
       },
     });
+  }
+
+  async findUserAndUpdate(
+    userId: string,
+    updatedFields: QueryDeepPartialEntity<User>,
+  ) {
+    const updatedResult = await this.userRepository.update(
+      userId,
+      updatedFields,
+    );
+
+    console.log(updatedResult);
   }
 }
